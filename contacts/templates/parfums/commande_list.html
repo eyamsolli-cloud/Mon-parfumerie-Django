@@ -1,0 +1,113 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Toutes les Commandes — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1><i class="bi bi-receipt me-3"></i>Toutes les Commandes</h1>
+    <p>Historique complet des achats de parfums</p>
+  </div>
+</div>
+
+<div class="container mb-5">
+
+  <!-- Barre de recherche + bouton ajouter -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <form method="get" class="d-flex gap-2" style="flex:1; max-width:400px;">
+      <input type="text" name="q" value="{{ q }}" placeholder="Rechercher client ou parfum…"
+             class="form-control" style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+      <button type="submit" class="btn-gold" style="padding:.5rem 1rem; white-space:nowrap;">
+        <i class="bi bi-search"></i>
+      </button>
+      {% if q %}
+        <a href="{% url 'parfums:commande_list' %}" style="padding:.5rem .8rem; color:var(--gris); text-decoration:none;">✕</a>
+      {% endif %}
+    </form>
+    {% if user.is_authenticated %}
+    <a href="{% url 'parfums:commande_ajouter' %}" class="btn-gold" style="text-decoration:none; padding:.55rem 1.4rem;">
+      <i class="bi bi-plus me-1"></i>Nouvelle commande
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- Tableau des commandes -->
+  <div style="background:#fff; border:1px solid #ecddd3; overflow:hidden;">
+    <table class="table table-luma mb-0">
+      <thead>
+        <tr style="background:var(--noir); color:#fff;">
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">#</th>
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">Client</th>
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">Parfum</th>
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">Qté</th>
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">Prix total</th>
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">Statut</th>
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">Date & Heure</th>
+          {% if user.is_authenticated %}
+          <th style="padding:.9rem 1rem; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;">Actions</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in commandes %}
+        <tr style="border-bottom:1px solid #ecddd3;">
+          <td style="padding:.8rem 1rem; color:var(--gris); font-size:.82rem;">#{{ c.pk }}</td>
+          <td style="padding:.8rem 1rem;">
+            <a href="{% url 'parfums:commande_client' c.client.pk %}"
+               style="color:var(--noir); text-decoration:none; font-weight:500;">
+              {{ c.client }}
+            </a>
+          </td>
+          <td style="padding:.8rem 1rem;">
+            <a href="{% url 'parfums:detail' c.parfum.pk %}"
+               style="color:var(--rose-dk); text-decoration:none;">
+              {{ c.parfum.nom }}
+            </a>
+            <br><small style="color:var(--gris); font-size:.75rem;">{{ c.parfum.marque }}</small>
+          </td>
+          <td style="padding:.8rem 1rem; text-align:center;">{{ c.quantite }}</td>
+          <td style="padding:.8rem 1rem; color:var(--or); font-weight:500;">{{ c.prix_total }} TND</td>
+          <td style="padding:.8rem 1rem;">
+            {% if c.statut == 'confirmee' %}
+              <span style="background:#e8f5e9; color:#2e7d32; font-size:.75rem; padding:.2em .7em; border-radius:20px;">✓ Confirmée</span>
+            {% elif c.statut == 'livree' %}
+              <span style="background:#e3f2fd; color:#1565c0; font-size:.75rem; padding:.2em .7em; border-radius:20px;">📦 Livrée</span>
+            {% elif c.statut == 'annulee' %}
+              <span style="background:#fce4ec; color:#880e4f; font-size:.75rem; padding:.2em .7em; border-radius:20px;">✕ Annulée</span>
+            {% else %}
+              <span style="background:#fff8e1; color:#f57f17; font-size:.75rem; padding:.2em .7em; border-radius:20px;">⏳ En attente</span>
+            {% endif %}
+          </td>
+          <td style="padding:.8rem 1rem; font-size:.82rem; color:var(--gris);">
+            {{ c.date_commande|date:"d/m/Y" }}<br>
+            <small style="color:var(--or);">{{ c.date_commande|time:"H\hi" }}</small>
+          </td>
+          {% if user.is_authenticated %}
+          <td style="padding:.8rem 1rem;">
+            <a href="{% url 'parfums:commande_modifier' c.pk %}"
+               class="btn btn-sm me-1" style="background:#f0e0c8; border-radius:0;">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'parfums:commande_supprimer' c.pk %}"
+               class="btn btn-sm btn-danger" style="border-radius:0;">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-center py-5" style="color:var(--gris);">
+            <i class="bi bi-receipt" style="font-size:2rem; opacity:.3; display:block; margin-bottom:.5rem;"></i>
+            Aucune commande enregistrée.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-2" style="font-size:.82rem; color:var(--gris);">
+    {{ commandes|length }} commande(s) au total
+  </div>
+</div>
+{% endblock %}

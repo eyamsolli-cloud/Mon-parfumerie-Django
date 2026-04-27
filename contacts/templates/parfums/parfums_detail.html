@@ -1,0 +1,82 @@
+{% extends 'parfums/base.html' %}
+{% block title %}{{ parfum.nom }} — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <p class="mb-1">{{ parfum.marque }}</p>
+    <h1>{{ parfum.nom }}</h1>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row g-5">
+
+    <!-- Image -->
+    <div class="col-md-5">
+      <div style="background:#f0e8e0;min-height:380px;display:flex;align-items:center;justify-content:center;border:1px solid #ecddd3;">
+        {% if parfum.image %}
+          <img src="{{ parfum.image.url }}" alt="{{ parfum.nom }}"
+               style="max-height:380px;max-width:100%;object-fit:contain;">
+        {% else %}
+          <span style="font-size:6rem;opacity:.3">🧴</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Infos -->
+    <div class="col-md-7">
+      <span class="badge-genre badge-{{ parfum.genre }} mb-2">{{ parfum.get_genre_display }}</span>
+      <h2 style="font-size:2.2rem;margin-top:.5rem">{{ parfum.nom }}</h2>
+      <p style="color:var(--rose-dk);letter-spacing:.1em;text-transform:uppercase;font-size:.85rem">
+        {{ parfum.marque }}
+      </p>
+
+      <hr style="border-color:#ecddd3;margin:1.2rem 0">
+
+      <div class="row g-3 mb-3">
+        <div class="col-6">
+          <div class="form-label">Volume</div>
+          <strong>{{ parfum.volume_ml }} ml</strong>
+        </div>
+        <div class="col-6">
+          <div class="form-label">Stock</div>
+          {% if parfum.en_stock %}
+            <strong style="color:#5a8a5a">{{ parfum.stock }} unités</strong>
+          {% else %}
+            <strong style="color:#9c3030">Rupture de stock</strong>
+          {% endif %}
+        </div>
+        <div class="col-12">
+          <div class="form-label">Prix</div>
+          <span style="font-size:1.8rem;font-family:'Cormorant Garamond',serif">
+            {{ parfum.prix }} TND
+          </span>
+        </div>
+      </div>
+
+      {% if parfum.description %}
+      <p style="color:var(--gris);line-height:1.7;font-size:.92rem">{{ parfum.description }}</p>
+      {% endif %}
+
+      <hr style="border-color:#ecddd3;margin:1.2rem 0">
+      <small style="color:#bbb;font-size:.75rem">
+        Ajouté le {{ parfum.date_ajout|date:"d/m/Y" }} ·
+        Modifié le {{ parfum.date_modif|date:"d/m/Y" }}
+      </small>
+
+      <div class="d-flex gap-2 mt-4">
+        <a href="{% url 'parfums:edit' parfum.pk %}" class="btn-gold" style="text-decoration:none;padding:.55rem 1.4rem">
+          <i class="bi bi-pencil me-1"></i> Modifier
+        </a>
+        <a href="{% url 'parfums:delete' parfum.pk %}" class="btn-danger-luma" style="text-decoration:none;padding:.55rem 1.4rem">
+          <i class="bi bi-trash me-1"></i> Supprimer
+        </a>
+        <a href="{% url 'parfums:list' %}" class="btn-outline-dark-luma" style="text-decoration:none;padding:.55rem 1.4rem">
+          ← Retour
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

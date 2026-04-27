@@ -1,0 +1,49 @@
+{% extends 'parfums/base.html' %}
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} un client{% endblock %}
+
+{% block content %}
+<div class="page-hero"><div class="container">
+  <h1>{% if form.instance.pk %}Modifier le client{% else %}Nouveau client{% endif %}</h1>
+</div></div>
+
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div style="background:#fff;border:1px solid #ecddd3;padding:2.5rem">
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nom *</label>{{ form.nom }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Prénom *</label>{{ form.prenom }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Email *</label>{{ form.email }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Téléphone</label>{{ form.telephone }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Adresse</label>{{ form.adresse }}
+            </div>
+          </div>
+          {% if form.errors %}
+          <div class="alert alert-danger mt-3">
+            {% for field in form %}{% for e in field.errors %}
+              <div>{{ field.label }} : {{ e }}</div>
+            {% endfor %}{% endfor %}
+          </div>
+          {% endif %}
+          <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'parfums:client_list' %}" class="btn-outline-dark-luma"
+               style="text-decoration:none;padding:.55rem 1.4rem">Annuler</a>
+            <button type="submit" class="btn-gold">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

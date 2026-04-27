@@ -1,0 +1,51 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Modifier Commande #{{ commande.pk }} — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1><i class="bi bi-pencil me-3"></i>Modifier la Commande #{{ commande.pk }}</h1>
+    <p>{{ commande.client }} → {{ commande.parfum.nom }}</p>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div style="background:#fff; border:1px solid #ecddd3; padding:2.5rem; border-radius:4px;">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Quantité</label>
+            <input type="number" name="quantite" value="{{ commande.quantite }}" min="1" class="form-control"
+                   style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Statut</label>
+            <select name="statut" class="form-select"
+                    style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+              {% for val, label in statuts %}
+              <option value="{{ val }}" {% if commande.statut == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Notes</label>
+            <textarea name="notes" class="form-control" rows="2"
+                      style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">{{ commande.notes }}</textarea>
+          </div>
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'parfums:commande_client' commande.client.pk %}"
+               style="padding:.55rem 1.4rem; border:1px solid #ecddd3; color:var(--gris); text-decoration:none; font-size:.82rem; text-transform:uppercase;">
+              Annuler
+            </a>
+            <button type="submit" class="btn-gold" style="padding:.6rem 2rem;">
+              <i class="bi bi-check2 me-1"></i>Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

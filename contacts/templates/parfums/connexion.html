@@ -1,0 +1,50 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Connexion — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center" style="min-height:78vh;">
+  <div style="width:100%; max-width:420px;">
+
+    <div class="text-center mb-4">
+      <h1 style="font-family:'Cormorant Garamond',serif; font-size:2.8rem; color:var(--or); letter-spacing:0.2em;">LUMA</h1>
+      <p style="font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gris);">Espace de gestion</p>
+    </div>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }} alert-dismissible fade show mb-3" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div style="background:#fff; border:1px solid #ecddd3; padding:2.5rem; border-radius:4px;">
+      <h4 style="font-size:1rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1.5rem; font-family:'Cormorant Garamond',serif;">
+        <i class="bi bi-lock me-2" style="color:var(--or);"></i>Connexion
+      </h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label" style="font-size:0.82rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--gris);">Identifiant</label>
+          <input type="text" name="username" class="form-control" autofocus required
+                 style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+        </div>
+        <div class="mb-4">
+          <label class="form-label" style="font-size:0.82rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--gris);">Mot de passe</label>
+          <input type="password" name="password" class="form-control" required
+                 style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+        </div>
+        <button type="submit" class="btn-gold w-100" style="padding:0.75rem; width:100%; text-align:center;">
+          <i class="bi bi-lock-fill me-2"></i>Se connecter
+        </button>
+      </form>
+      <p class="text-center mt-3" style="font-size:0.82rem; color:var(--gris);">
+        Pas encore de compte ?
+        <a href="{% url 'parfums:inscription' %}" style="color:var(--rose-dk);">S'inscrire</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

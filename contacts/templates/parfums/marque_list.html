@@ -1,0 +1,58 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Marques — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1>Gestion des Marques</h1>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <span style="color:var(--gris)">{{ marques.count }} marque(s)</span>
+    <a href="{% url 'parfums:marque_create' %}" class="btn-gold" style="text-decoration:none;padding:.55rem 1.4rem">
+      <i class="bi bi-plus me-1"></i> Nouvelle marque
+    </a>
+  </div>
+
+  <table class="table table-luma">
+    <thead>
+      <tr>
+        <th>Logo</th><th>Marque</th><th>Pays</th><th>Parfums</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in marques %}
+      <tr>
+        <td>
+          {% if m.logo %}
+            <img src="{{ m.logo.url }}" height="36"
+                 style="object-fit:contain;border:1px solid #ecddd3;padding:2px">
+          {% else %}
+            <span style="color:#ccc">—</span>
+          {% endif %}
+        </td>
+        <td><strong>{{ m.nom }}</strong></td>
+        <td>{{ m.pays|default:"—" }}</td>
+        <td>{{ m.parfums.count }}</td>
+        <td>
+          <a href="{% url 'parfums:marque_update' m.pk %}"
+             class="btn btn-sm me-1" style="background:#f0e0c8;border-radius:0">
+            <i class="bi bi-pencil"></i>
+          </a>
+          <a href="{% url 'parfums:marque_delete' m.pk %}"
+             class="btn btn-sm btn-danger" style="border-radius:0">
+            <i class="bi bi-trash"></i>
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-center py-4" style="color:var(--gris)">
+        Aucune marque enregistrée.
+      </td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

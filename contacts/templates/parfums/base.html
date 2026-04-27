@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Luma Parfums{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --creme:   #faf6f1;
+      --rose:    #c9a08a;
+      --rose-dk: #a0705a;
+      --or:      #c8a96e;
+      --noir:    #1a1410;
+      --gris:    #6b5f57;
+      --card-bg: #fff9f5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--creme);
+      color: var(--noir);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+    }
+
+    /* ── NAV ── */
+    .navbar-luma {
+      background: var(--noir);
+      padding: 0.9rem 2rem;
+      border-bottom: 1px solid #333;
+    }
+    .navbar-luma .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.15em;
+      color: var(--or);
+      text-decoration: none;
+    }
+    .navbar-luma .brand span { color: #fff; }
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-left: 2rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--or); }
+    .nav-links a.active { color: var(--or); border-bottom: 1px solid var(--or); padding-bottom: 2px; }
+
+    /* ── HERO STRIP ── */
+    .page-hero {
+      background: linear-gradient(135deg, #1a1410 0%, #2e1f18 60%, #3d2a20 100%);
+      color: white;
+      padding: 3rem 0 2.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(200,169,110,0.07);
+    }
+    .page-hero h1 {
+      font-size: 2.6rem;
+      color: var(--or);
+      margin: 0;
+    }
+    .page-hero p { color: #bbb; font-size: 0.9rem; letter-spacing: 0.1em; }
+
+    /* ── CARDS ── */
+    .card-parfum {
+      background: var(--card-bg);
+      border: 1px solid #ecddd3;
+      border-radius: 2px;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .card-parfum:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.09);
+    }
+    .card-parfum .img-wrap {
+      height: 220px;
+      overflow: hidden;
+      background: #f0e8e0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-parfum .img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .card-parfum:hover .img-wrap img { transform: scale(1.04); }
+    .card-parfum .img-wrap .no-img {
+      font-size: 3.5rem;
+      color: #ccc;
+    }
+    .card-parfum .card-body { padding: 1.1rem 1.3rem; }
+    .card-parfum .brand-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rose-dk);
+    }
+    .card-parfum h5 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      margin: 0.2rem 0 0.5rem;
+    }
+    .card-parfum .prix {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--noir);
+    }
+    .badge-genre {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25em 0.7em;
+      border-radius: 0;
+    }
+    .badge-femme { background: #f5ddd6; color: #8b3e2f; }
+    .badge-homme { background: #d6e4f5; color: #2f4f8b; }
+    .badge-mixte { background: #e8e0f0; color: #5a3d8b; }
+
+    /* ── BTNS ── */
+    .btn-gold {
+      background: var(--or);
+      color: var(--noir);
+      border: none;
+      border-radius: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.4rem;
+      transition: background 0.2s;
+    }
+    .btn-gold:hover { background: #b8953e; color: var(--noir); }
+    .btn-outline-dark-luma {
+      border: 1px solid var(--noir);
+      border-radius: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.4rem;
+      color: var(--noir);
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .btn-outline-dark-luma:hover { background: var(--noir); color: #fff; }
+    .btn-rose {
+      background: var(--rose);
+      color: white;
+      border: none;
+      border-radius: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.4rem;
+    }
+    .btn-danger-luma {
+      background: #9c3030;
+      color: white;
+      border: none;
+      border-radius: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.4rem;
+    }
+
+    /* ── FORM ── */
+    .form-control, .form-select {
+      border-radius: 0;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-family: 'Jost', sans-serif;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(201,160,138,0.15);
+    }
+    .form-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gris);
+      margin-bottom: 0.35rem;
+    }
+
+    /* ── TABLE ── */
+    .table-luma thead tr { background: var(--noir); color: var(--or); }
+    .table-luma thead th {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.9rem 1rem;
+      border: none;
+    }
+    .table-luma tbody tr { border-bottom: 1px solid #f0e8e0; }
+    .table-luma tbody td { padding: 0.85rem 1rem; vertical-align: middle; }
+    .table-luma tbody tr:hover { background: #fff9f5; }
+
+    /* ── SIDEBAR FILTER ── */
+    .filter-panel {
+      background: #fff;
+      border: 1px solid #ecddd3;
+      padding: 1.5rem;
+    }
+    .filter-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rose-dk);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #ecddd3;
+    }
+    .filter-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 0.4rem 0;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.85rem;
+      color: var(--gris);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active { color: var(--rose-dk); }
+
+    /* ── PAGINATION ── */
+    .pagination .page-link {
+      border-radius: 0 !important;
+      color: var(--noir);
+      border-color: #ddd;
+      font-size: 0.8rem;
+    }
+    .pagination .page-item.active .page-link {
+      background: var(--noir);
+      border-color: var(--noir);
+      color: var(--or);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--noir);
+      color: #888;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 4rem;
+    }
+    footer span { color: var(--or); }
+
+    /* ── ALERTS ── */
+    .alert { border-radius: 0; border: none; font-size: 0.88rem; }
+
+    /* ── BOUTON DECONNEXION ── */
+    .btn-logout {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-left: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .btn-logout:hover { color: var(--or); }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar-luma d-flex align-items-center justify-content-between">
+  <a href="{% url 'parfums:list' %}" class="brand">LUMA <span>Parfums</span></a>
+  <div class="nav-links d-flex align-items-center">
+    {% if user.is_authenticated %}
+      <a href="{% url 'parfums:list' %}"><i class="bi bi-grid me-1"></i>Parfums</a>
+      <a href="{% url 'parfums:marque_list' %}"><i class="bi bi-tag me-1"></i>Marques</a>
+      <a href="{% url 'parfums:client_list' %}"><i class="bi bi-people me-1"></i>Clients</a>
+      <a href="{% url 'parfums:commande_list' %}"><i class="bi bi-receipt me-1"></i>Commandes</a>
+      <a href="{% url 'parfums:add' %}" class="btn-gold ms-3"><i class="bi bi-plus me-1"></i>Ajouter</a>
+      <a href="{% url 'parfums:profil' %}" style="color:#ccc; font-size:0.78rem; margin-left:1.5rem; text-decoration:none;" title="Mon profil">
+        <i class="bi bi-person-circle me-1" style="color:var(--or);"></i>{{ user.username }}
+      </a>
+      <form method="post" action="{% url 'parfums:deconnexion' %}" style="margin:0;">
+        {% csrf_token %}
+        <button type="submit" class="btn-logout">
+          <i class="bi bi-box-arrow-right me-1"></i>Déconnexion
+        </button>
+      </form>
+    {% else %}
+      <a href="{% url 'parfums:connexion' %}">
+        <i class="bi bi-lock me-1"></i>Connexion
+      </a>
+      <a href="{% url 'parfums:inscription' %}" class="btn-gold ms-3">
+        <i class="bi bi-person-plus me-1"></i>Inscription
+      </a>
+    {% endif %}
+  </div>
+</nav>
+
+<!-- ══ MESSAGES ══ -->
+{% if messages %}
+<div class="container mt-2">
+  {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }} alert-dismissible fade show">
+      {{ msg }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ══ CONTENT ══ -->
+{% block content %}{% endblock %}
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  &copy; 2026 <span>LUMA Parfums</span> — Tous droits réservés
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

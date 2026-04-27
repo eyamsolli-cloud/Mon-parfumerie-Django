@@ -1,0 +1,78 @@
+{% extends 'parfums/base.html' %}
+{% block title %}{{ client.prenom }} {{ client.nom }} — LUMA{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <p class="mb-1">Fiche client</p>
+    <h1>{{ client.prenom }} {{ client.nom }}</h1>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row g-4 justify-content-center">
+    <div class="col-md-6">
+      <div style="background:#fff;border:1px solid #ecddd3;padding:2.5rem">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="form-label">Nom</div>
+            <strong>{{ client.nom }}</strong>
+          </div>
+          <div class="col-6">
+            <div class="form-label">Prénom</div>
+            <strong>{{ client.prenom }}</strong>
+          </div>
+          <div class="col-12">
+            <div class="form-label">Email</div>
+            <strong>{{ client.email }}</strong>
+          </div>
+          <div class="col-6">
+            <div class="form-label">Téléphone</div>
+            <strong>{{ client.telephone|default:"—" }}</strong>
+          </div>
+          <div class="col-6">
+            <div class="form-label">Inscrit le</div>
+            <strong>{{ client.date_inscription|date:"d/m/Y" }}</strong>
+          </div>
+          <div class="col-12">
+            <div class="form-label">Adresse</div>
+            <strong>{{ client.adresse|default:"—"|linebreaks }}</strong>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4 flex-wrap">
+
+          <a href="{% url 'parfums:client_edit' client.pk %}" class="btn-rose"
+             style="text-decoration:none;padding:.55rem 1.4rem">
+            <i class="bi bi-pencil me-1"></i>Modifier
+          </a>
+          <a href="{% url 'parfums:client_delete' client.pk %}" class="btn-danger-luma"
+             style="text-decoration:none;padding:.55rem 1.4rem">
+            <i class="bi bi-trash me-1"></i>Supprimer
+          </a>
+          <a href="{% url 'parfums:client_list' %}" class="btn-outline-dark-luma"
+             style="text-decoration:none;padding:.55rem 1.4rem">← Retour</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations complémentaires -->
+    <div class="col-md-5">
+      <div style="background:#fff9f5;border:1px solid #ecddd3;padding:1.5rem">
+        <h5 style="font-family:'Cormorant Garamond',serif;margin-bottom:1rem">
+          <i class="bi bi-info-circle me-2" style="color:var(--or);"></i>Informations
+        </h5>
+        <p style="color:var(--gris);font-size:.88rem;margin-bottom:.5rem;">
+          <i class="bi bi-calendar3 me-2"></i>
+          Inscrit le {{ client.date_inscription|date:"d/m/Y" }}
+        </p>
+        {% if client.adresse %}
+        <p style="color:var(--gris);font-size:.88rem;margin-bottom:.5rem;">
+          <i class="bi bi-geo-alt me-2"></i>{{ client.adresse }}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

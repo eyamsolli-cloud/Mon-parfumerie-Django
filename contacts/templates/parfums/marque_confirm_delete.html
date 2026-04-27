@@ -1,0 +1,20 @@
+{% extends 'parfums/base.html' %}
+{% block content %}
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div style="border:2px solid #9c3030;padding:2.5rem;background:#fff">
+        <h2 style="color:#9c3030">Supprimer la marque</h2>
+        <p>Supprimer <strong>{{ marque.nom }}</strong> ?
+        <br><small style="color:#9c3030">Attention : tous ses parfums seront supprimés.</small></p>
+        <form method="post" class="d-flex justify-content-between mt-3">
+          {% csrf_token %}
+          <a href="{% url 'parfums:marque_list' %}" class="btn-outline-dark-luma"
+             style="text-decoration:none;padding:.55rem 1.4rem">Annuler</a>
+          <button type="submit" class="btn-danger-luma">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

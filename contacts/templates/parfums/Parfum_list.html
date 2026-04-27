@@ -1,0 +1,167 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Catalogue — LUMA Parfums{% endblock %}
+
+{% block content %}
+<!-- ── Hero ── -->
+<div class="page-hero">
+  <div class="container">
+    <p class="mb-1">Notre collection</p>
+    <h1>Catalogue des Parfums</h1>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row g-4">
+
+    <!-- ── Sidebar ── -->
+    <div class="col-lg-3">
+      <div class="filter-panel">
+        <div class="filter-title">Filtres</div>
+
+        <!-- Search -->
+        <form method="get" id="filterForm">
+          <input type="hidden" name="sort" value="{{ sort_actif }}">
+          <div class="mb-3">
+            <input type="text" name="q" class="form-control form-control-sm"
+              placeholder="Rechercher…" value="{{ q }}">
+          </div>
+
+          <!-- Genre -->
+          <div class="filter-title mt-2">Genre</div>
+          <button type="submit" name="genre" value=""
+            class="filter-btn {% if not genre_actif %}active{% endif %}">
+            Tous les genres
+          </button>
+          <button type="submit" name="genre" value="femme"
+            class="filter-btn {% if genre_actif == 'femme' %}active{% endif %}">
+            🌸 Femme
+          </button>
+          <button type="submit" name="genre" value="homme"
+            class="filter-btn {% if genre_actif == 'homme' %}active{% endif %}">
+            🌊 Homme
+          </button>
+          <button type="submit" name="genre" value="mixte"
+            class="filter-btn {% if genre_actif == 'mixte' %}active{% endif %}">
+            ✨ Mixte
+          </button>
+
+          <!-- Marque -->
+          <div class="filter-title mt-3">Marque</div>
+          <button type="submit" name="marque" value=""
+            class="filter-btn {% if not marque_actif %}active{% endif %}">
+            Toutes les marques
+          </button>
+          {% for m in marques %}
+          <button type="submit" name="marque" value="{{ m.pk }}"
+            class="filter-btn {% if marque_actif == m.pk|stringformat:'s' %}active{% endif %}">
+            {{ m.nom }}
+          </button>
+          {% endfor %}
+
+          <!-- Tri -->
+          <div class="filter-title mt-3">Trier par</div>
+          <select name="sort" class="form-select form-select-sm mb-2"
+            onchange="this.form.submit()">
+            <option value="nom"      {% if sort_actif == 'nom'      %}selected{% endif %}>Nom A→Z</option>
+            <option value="prix_asc" {% if sort_actif == 'prix_asc' %}selected{% endif %}>Prix croissant</option>
+            <option value="prix_desc"{% if sort_actif == 'prix_desc'%}selected{% endif %}>Prix décroissant</option>
+            <option value="recent"   {% if sort_actif == 'recent'   %}selected{% endif %}>Nouveautés</option>
+          </select>
+        </form>
+
+        <a href="{% url 'parfums:list' %}" class="btn-outline-dark-luma d-block text-center mt-2"
+           style="text-decoration:none;padding:0.4rem;">
+          Réinitialiser
+        </a>
+      </div>
+    </div>
+
+    <!-- ── Grid ── -->
+    <div class="col-lg-9">
+      {% if parfums %}
+      <div class="row g-4">
+        {% for p in parfums %}
+        <div class="col-md-6 col-xl-4">
+          <div class="card-parfum h-100">
+            <div class="img-wrap">
+              {% if p.image %}
+                <img src="{{ p.image.url }}" alt="{{ p.nom }}">
+              {% else %}
+                <span class="no-img">🧴</span>
+              {% endif %}
+            </div>
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="brand-tag">{{ p.marque }}</span>
+                <span class="badge-genre badge-{{ p.genre }}">{{ p.get_genre_display }}</span>
+              </div>
+              <h5>{{ p.nom }}</h5>
+              <p class="text-muted" style="font-size:0.82rem;flex:1">
+                {{ p.volume_ml }} ml
+                {% if p.en_stock %}
+                  · <span style="color:#5a8a5a">En stock ({{ p.stock }})</span>
+                {% else %}
+                  · <span style="color:#9c3030">Rupture</span>
+                {% endif %}
+              </p>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <span class="prix">{{ p.prix }} TND</span>
+                <div class="d-flex gap-1">
+                  <a href="{% url 'parfums:detail' p.pk %}"
+                     class="btn btn-sm btn-outline-secondary" style="border-radius:0" title="Voir">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a href="{% url 'parfums:edit' p.pk %}"
+                     class="btn btn-sm" style="background:#f0e0c8;border-radius:0" title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="{% url 'parfums:delete' p.pk %}"
+                     class="btn btn-sm btn-danger" style="border-radius:0" title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if is_paginated %}
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1&q={{ q }}&genre={{ genre_actif }}&sort={{ sort_actif }}">«</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ q }}&genre={{ genre_actif }}&sort={{ sort_actif }}">Préc.</a>
+          </li>
+          {% endif %}
+          <li class="page-item active">
+            <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+          </li>
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ q }}&genre={{ genre_actif }}&sort={{ sort_actif }}">Suiv.</a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+
+      {% else %}
+      <div class="text-center py-5">
+        <div style="font-size:4rem;opacity:.3">🧴</div>
+        <p style="color:var(--gris)">Aucun parfum trouvé.</p>
+        <a href="{% url 'parfums:add' %}" class="btn-gold" style="text-decoration:none;padding:0.6rem 2rem">
+          Ajouter un parfum
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

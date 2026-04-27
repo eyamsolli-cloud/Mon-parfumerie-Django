@@ -1,0 +1,20 @@
+{% extends 'parfums/base.html' %}
+{% block content %}
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div style="border:2px solid #9c3030;padding:2.5rem;background:#fff">
+        <h2 style="color:#9c3030">Supprimer le client</h2>
+        <p>Supprimer <strong>{{ client.prenom }} {{ client.nom }}</strong> ?</p>
+        <p style="color:#9c3030;font-size:.85rem">⚠️ Cette action est irréversible.</p>
+        <form method="post" class="d-flex justify-content-between mt-3">
+          {% csrf_token %}
+          <a href="{% url 'parfums:client_list' %}" class="btn-outline-dark-luma"
+             style="text-decoration:none;padding:.55rem 1.4rem">Annuler</a>
+          <button type="submit" class="btn-danger-luma">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

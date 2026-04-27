@@ -1,0 +1,65 @@
+{% extends 'parfums/base.html' %}
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} une marque — LUMA{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1>{% if form.instance.pk %}Modifier la marque{% else %}Ajouter une marque{% endif %}</h1>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div style="background:#fff;border:1px solid #ecddd3;padding:2.5rem;">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Nom de la marque *</label>
+              {{ form.nom }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Pays d'origine</label>
+              {{ form.pays }}
+            </div>
+            <div class="col-12">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Logo</label>
+              {% if form.instance.logo %}
+                <div class="mb-2">
+                  <img src="{{ form.instance.logo.url }}" height="80"
+                       style="border:1px solid #ecddd3;padding:4px">
+                </div>
+              {% endif %}
+              {{ form.logo }}
+              <small class="text-muted">Formats acceptés : JPG, PNG, WEBP</small>
+            </div>
+          </div>
+
+          <!-- Errors -->
+          {% if form.errors %}
+          <div class="alert alert-danger mt-3">
+            {% for field in form %}{% for error in field.errors %}
+              <div>{{ field.label }} : {{ error }}</div>
+            {% endfor %}{% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'parfums:marque_list' %}" class="btn-outline-dark-luma"
+               style="text-decoration:none;padding:0.55rem 1.4rem">
+              Annuler
+            </a>
+            <button type="submit" class="btn-gold">
+              {% if form.instance.pk %}Enregistrer{% else %}Ajouter la marque{% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

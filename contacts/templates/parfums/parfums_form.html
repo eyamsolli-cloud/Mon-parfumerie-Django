@@ -1,0 +1,83 @@
+{% extends 'parfums/base.html' %}
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} un parfum — LUMA{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1>{% if form.instance.pk %}Modifier le parfum{% else %}Ajouter un parfum{% endif %}</h1>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div style="background:#fff;border:1px solid #ecddd3;padding:2.5rem;">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Nom du parfum *</label>
+              {{ form.nom }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Volume (ml)</label>
+              {{ form.volume_ml }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Marque *</label>
+              {{ form.marque }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Genre *</label>
+              {{ form.genre }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Prix (TND) *</label>
+              {{ form.prix }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Stock disponible</label>
+              {{ form.stock }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              {{ form.description }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Image du parfum</label>
+              {% if form.instance.image %}
+                <div class="mb-2">
+                  <img src="{{ form.instance.image.url }}" height="80"
+                       style="border:1px solid #ecddd3;padding:4px">
+                </div>
+              {% endif %}
+              {{ form.image }}
+              <small class="text-muted">Formats acceptés : JPG, PNG, WEBP</small>
+            </div>
+          </div>
+
+          <!-- Errors -->
+          {% if form.errors %}
+          <div class="alert alert-danger mt-3">
+            {% for field in form %}{% for error in field.errors %}
+              <div>{{ field.label }} : {{ error }}</div>
+            {% endfor %}{% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'parfums:list' %}" class="btn-outline-dark-luma"
+               style="text-decoration:none;padding:0.55rem 1.4rem">
+              Annuler
+            </a>
+            <button type="submit" class="btn-gold">
+              {% if form.instance.pk %}Enregistrer{% else %}Ajouter au catalogue{% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

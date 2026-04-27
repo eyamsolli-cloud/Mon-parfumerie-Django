@@ -1,0 +1,90 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Nouvelle Commande — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1><i class="bi bi-cart-plus me-3"></i>Nouvelle Commande</h1>
+    <p>Enregistrer un achat de parfum pour un client</p>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div style="background:#fff; border:1px solid #ecddd3; padding:2.5rem; border-radius:4px;">
+
+        {% if messages %}
+          {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }} alert-dismissible fade show mb-3">
+              {{ msg }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Client *</label>
+            <select name="client" class="form-select" required
+                    style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+              <option value="">— Choisir un client —</option>
+              {% for cl in clients %}
+              <option value="{{ cl.pk }}"
+                {% if client_initial and client_initial.pk == cl.pk %}selected{% endif %}>
+                {{ cl }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Parfum *</label>
+            <select name="parfum" class="form-select" required
+                    style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+              <option value="">— Choisir un parfum —</option>
+              {% for p in parfums %}
+              <option value="{{ p.pk }}">{{ p.nom }} — {{ p.marque }} ({{ p.prix }} TND)</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Quantité *</label>
+              <input type="number" name="quantite" value="1" min="1" class="form-control"
+                     style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;" required>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Statut</label>
+              <select name="statut" class="form-select"
+                      style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;">
+                {% for val, label in statuts %}
+                <option value="{{ val }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" style="font-size:.82rem; text-transform:uppercase; color:var(--gris);">Notes (optionnel)</label>
+            <textarea name="notes" class="form-control" rows="2"
+                      style="border:1px solid #ecddd3; border-radius:2px; background:#faf6f1;"
+                      placeholder="Ex : livraison à domicile, cadeau, etc."></textarea>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'parfums:commande_list' %}"
+               style="padding:.55rem 1.4rem; border:1px solid #ecddd3; color:var(--gris); text-decoration:none; font-size:.82rem; text-transform:uppercase;">
+              Annuler
+            </a>
+            <button type="submit" class="btn-gold" style="padding:.6rem 2rem;">
+              <i class="bi bi-check2 me-1"></i>Enregistrer la commande
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

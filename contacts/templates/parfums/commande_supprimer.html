@@ -1,0 +1,32 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Supprimer la Commande — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div style="border:2px solid #9c3030; padding:2.5rem; background:#fff; border-radius:4px;">
+        <h2 style="color:#9c3030; font-family:'Cormorant Garamond',serif;">Supprimer la commande</h2>
+        <p style="margin-top:1rem;">
+          Voulez-vous supprimer la commande <strong>#{{ commande.pk }}</strong> ?<br>
+          <span style="color:var(--gris); font-size:.88rem;">
+            Client : <strong>{{ commande.client }}</strong><br>
+            Parfum : <strong>{{ commande.parfum.nom }}</strong><br>
+            Date : <strong>{{ commande.date_commande|date:"d/m/Y" }} à {{ commande.date_commande|time:"H\hi" }}</strong>
+          </span>
+        </p>
+        <form method="post" class="d-flex justify-content-between mt-3">
+          {% csrf_token %}
+          <a href="{% url 'parfums:commande_client' commande.client.pk %}"
+             style="padding:.55rem 1.4rem; border:1px solid #ecddd3; color:var(--gris); text-decoration:none; font-size:.82rem; text-transform:uppercase;">
+            Annuler
+          </a>
+          <button type="submit" class="btn btn-danger" style="border-radius:0;">
+            <i class="bi bi-trash me-1"></i>Supprimer
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

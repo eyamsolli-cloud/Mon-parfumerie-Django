@@ -1,0 +1,158 @@
+{% extends 'parfums/base.html' %}
+{% block title %}Commandes de {{ client }} — LUMA Parfums{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1><i class="bi bi-person-lines-fill me-3"></i>{{ client }}</h1>
+    <p>Historique des achats de ce client</p>
+  </div>
+</div>
+
+<div class="container mb-5">
+
+  <!-- Info client + stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div style="background:#fff; border:1px solid #ecddd3; padding:1.5rem; border-radius:4px;">
+        <h6 style="font-size:.78rem; text-transform:uppercase; color:var(--gris); letter-spacing:.1em; margin-bottom:1rem;">
+          Informations client
+        </h6>
+        <p style="margin:0; font-size:.88rem;"><i class="bi bi-envelope me-2" style="color:var(--or);"></i>{{ client.email }}</p>
+        {% if client.telephone %}
+        <p style="margin:.4rem 0 0; font-size:.88rem;"><i class="bi bi-telephone me-2" style="color:var(--or);"></i>{{ client.telephone }}</p>
+        {% endif %}
+        {% if client.adresse %}
+        <p style="margin:.4rem 0 0; font-size:.88rem;"><i class="bi bi-geo-alt me-2" style="color:var(--or);"></i>{{ client.adresse }}</p>
+        {% endif %}
+        <hr style="border-color:#ecddd3;">
+        <a href="{% url 'parfums:client_detail' client.pk %}" style="font-size:.82rem; color:var(--rose-dk); text-decoration:none;">
+          <i class="bi bi-arrow-right me-1"></i>Fiche client complète
+        </a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div style="background:var(--noir); color:#fff; padding:1.5rem; border-radius:4px; text-align:center;">
+        <div style="font-size:2.5rem; color:var(--or); font-family:'Cormorant Garamond',serif;">{{ commandes|length }}</div>
+        <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:#aaa;">Commande(s) au total</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div style="background:#fff; border:1px solid #ecddd3; padding:1.5rem; border-radius:4px; text-align:center;">
+        <div style="font-size:2rem; color:var(--or); font-family:'Cormorant Garamond',serif;">{{ client.total_depense }} TND</div>
+        <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:var(--gris);">Total dépensé</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bouton ajouter commande -->
+  {% if user.is_authenticated %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 style="font-family:'Cormorant Garamond',serif; color:var(--noir); margin:0;">Détail des commandes</h5>
+    <a href="{% url 'parfums:commande_ajouter_client' client.pk %}" class="btn-gold" style="text-decoration:none; padding:.5rem 1.2rem;">
+      <i class="bi bi-plus me-1"></i>Ajouter une commande
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- Timeline des commandes -->
+  {% for c in commandes %}
+  <div style="background:#fff; border:1px solid #ecddd3; border-radius:4px; margin-bottom:.8rem; display:flex; align-items:stretch; overflow:hidden;">
+
+    <!-- Bande colorée statut -->
+    <div style="width:5px; flex-shrink:0;
+      {% if c.statut == 'confirmee' %}background:#4caf50;
+      {% elif c.statut == 'livree' %}background:#2196f3;
+      {% elif c.statut == 'annulee' %}background:#e53935;
+      {% else %}background:#ff9800;{% endif %}">
+    </div>
+
+    <!-- Contenu -->
+    <div class="d-flex align-items-center flex-wrap gap-3 p-3" style="flex:1;">
+
+      <!-- Image parfum -->
+      {% if c.parfum.image %}
+      <img src="{{ c.parfum.image.url }}" alt="{{ c.parfum.nom }}"
+           style="width:56px; height:56px; object-fit:cover; border:1px solid #ecddd3;">
+      {% else %}
+      <div style="width:56px; height:56px; background:var(--creme); border:1px solid #ecddd3; display:flex; align-items:center; justify-content:center;">
+        <i class="bi bi-droplet" style="color:var(--or); font-size:1.4rem;"></i>
+      </div>
+      {% endif %}
+
+      <!-- Infos parfum -->
+      <div style="flex:1; min-width:180px;">
+        <div style="font-weight:500; font-size:.95rem;">
+          <a href="{% url 'parfums:detail' c.parfum.pk %}" style="color:var(--noir); text-decoration:none;">
+            {{ c.parfum.nom }}
+          </a>
+        </div>
+        <div style="font-size:.8rem; color:var(--gris);">{{ c.parfum.marque }} · {{ c.parfum.volume_ml }} ml</div>
+        {% if c.notes %}
+        <div style="font-size:.78rem; color:var(--gris); font-style:italic; margin-top:.2rem;">📝 {{ c.notes }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Quantité & prix -->
+      <div style="text-align:center; min-width:80px;">
+        <div style="font-size:.75rem; color:var(--gris); text-transform:uppercase; letter-spacing:.05em;">Qté</div>
+        <div style="font-size:1.3rem; color:var(--noir); font-family:'Cormorant Garamond',serif;">{{ c.quantite }}</div>
+      </div>
+      <div style="text-align:center; min-width:100px;">
+        <div style="font-size:.75rem; color:var(--gris); text-transform:uppercase; letter-spacing:.05em;">Prix total</div>
+        <div style="font-size:1.1rem; color:var(--or); font-weight:500;">{{ c.prix_total }} TND</div>
+      </div>
+
+      <!-- Statut -->
+      <div style="min-width:110px; text-align:center;">
+        {% if c.statut == 'confirmee' %}
+          <span style="background:#e8f5e9; color:#2e7d32; font-size:.75rem; padding:.25em .8em; border-radius:20px;">✓ Confirmée</span>
+        {% elif c.statut == 'livree' %}
+          <span style="background:#e3f2fd; color:#1565c0; font-size:.75rem; padding:.25em .8em; border-radius:20px;">📦 Livrée</span>
+        {% elif c.statut == 'annulee' %}
+          <span style="background:#fce4ec; color:#880e4f; font-size:.75rem; padding:.25em .8em; border-radius:20px;">✕ Annulée</span>
+        {% else %}
+          <span style="background:#fff8e1; color:#f57f17; font-size:.75rem; padding:.25em .8em; border-radius:20px;">⏳ En attente</span>
+        {% endif %}
+      </div>
+
+      <!-- Date & heure -->
+      <div style="text-align:right; min-width:100px;">
+        <div style="font-size:.85rem; color:var(--noir);">{{ c.date_commande|date:"d/m/Y" }}</div>
+        <div style="font-size:.8rem; color:var(--or);"><i class="bi bi-clock me-1"></i>{{ c.date_commande|time:"H\hi" }}</div>
+      </div>
+
+      <!-- Actions -->
+      {% if user.is_authenticated %}
+      <div class="d-flex gap-1">
+        <a href="{% url 'parfums:commande_modifier' c.pk %}"
+           class="btn btn-sm" style="background:#f0e0c8; border-radius:0;" title="Modifier">
+          <i class="bi bi-pencil"></i>
+        </a>
+        <a href="{% url 'parfums:commande_supprimer' c.pk %}"
+           class="btn btn-sm btn-danger" style="border-radius:0;" title="Supprimer">
+          <i class="bi bi-trash"></i>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <div style="text-align:center; padding:3rem; color:var(--gris); background:#fff; border:1px solid #ecddd3;">
+    <i class="bi bi-cart-x" style="font-size:2.5rem; opacity:.3; display:block; margin-bottom:.5rem;"></i>
+    Ce client n'a pas encore de commandes.
+    {% if user.is_authenticated %}
+    <br><a href="{% url 'parfums:commande_ajouter_client' client.pk %}" class="btn-gold d-inline-block mt-3" style="text-decoration:none; padding:.5rem 1.4rem;">
+      Ajouter sa première commande
+    </a>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <div class="mt-4">
+    <a href="{% url 'parfums:commande_list' %}" style="color:var(--gris); text-decoration:none; font-size:.85rem;">
+      <i class="bi bi-arrow-left me-1"></i>Toutes les commandes
+    </a>
+  </div>
+</div>
+{% endblock %}
